@@ -24,6 +24,7 @@ export default function LoginPage() {
   const [formData, setFormData] = useState<FormData>({ email: "", password: "", rememberMe: false });
   const [errors, setErrors] = useState<FormErrors>({ email: "", password: "" });
   const [apiError, setApiError] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { updateUser } = User;
 
@@ -61,6 +62,7 @@ export default function LoginPage() {
       return;
     }
     try {
+      setLoading(true);
       const { data, res } = await postReq({ email: formData.email, password: formData.password }, "user/login");
       if (res.ok) {
         updateUser({ email: formData.email, username: data.username });
@@ -70,6 +72,8 @@ export default function LoginPage() {
       } else setApiError("An error occurred. Please try again.");
     } catch (error) {
       setApiError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -141,6 +145,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               className="w-full flex justify-center py-2 px-4 border-none rounded-md shadow-sm text-sm font-medium text-purple-700 bg-white hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              loading={loading}
             >
               Log in
             </Button>

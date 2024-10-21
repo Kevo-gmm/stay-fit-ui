@@ -26,6 +26,7 @@ export default function SignUpPage() {
   const [formData, setFormData] = useState<FormData>({ username: "", email: "", password: "", confirmPassword: "" });
   const [errors, setErrors] = useState<FormErrors>({ username: "", email: "", password: "", confirmPassword: "" });
   const [apiError, setApiError] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { updateUser } = User;
 
@@ -75,6 +76,7 @@ export default function SignUpPage() {
     }
 
     try {
+      setLoading(true);
       const { data, res } = await postReq({ username: formData.username, password: formData.password, email: formData.email }, "user/signup");
 
       if (res.ok) {
@@ -85,6 +87,8 @@ export default function SignUpPage() {
       }
     } catch (error) {
       setApiError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
